@@ -3,7 +3,7 @@
 import { useActionState, useRef, useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { createUser, resetPassword, updateUser } from "@/app/actions/admin";
-import { SubmitButton, useActionToast } from "@/components/form-bits";
+import { SubmitButton, keepValuesOnSubmit, useActionToast } from "@/components/form-bits";
 import { FormSelect } from "@/components/native-select";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,7 +29,7 @@ const ROLES = [
 export function CreateUserDialog({ departments }: { departments: Dept[] }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLFormElement>(null);
-  const [state, action] = useActionState(async (prev: Parameters<typeof createUser>[0], form: FormData) => {
+  const [state, action, pending] = useActionState(async (prev: Parameters<typeof createUser>[0], form: FormData) => {
     const res = await createUser(prev, form);
     if (res?.ok) setOpen(false);
     return res;
@@ -48,7 +48,7 @@ export function CreateUserDialog({ departments }: { departments: Dept[] }) {
           <DialogTitle>Add user</DialogTitle>
           <DialogDescription>Create an account for a technician, administrator or requester.</DialogDescription>
         </DialogHeader>
-        <form ref={ref} action={action} className="grid gap-4 sm:grid-cols-2">
+        <form ref={ref} onSubmit={keepValuesOnSubmit(action)} className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-2 sm:col-span-2">
             <Label htmlFor="cu-name">Full name</Label>
             <Input id="cu-name" name="fullName" required />
@@ -97,7 +97,9 @@ export function CreateUserDialog({ departments }: { departments: Dept[] }) {
             <p className="text-xs text-muted-foreground">Share it with the user; they can change it in My Profile.</p>
           </div>
           <DialogFooter className="sm:col-span-2">
-            <SubmitButton pendingText="Creating…">Create account</SubmitButton>
+            <SubmitButton pending={pending} pendingText="Creating…">
+              Create account
+            </SubmitButton>
           </DialogFooter>
         </form>
       </DialogContent>

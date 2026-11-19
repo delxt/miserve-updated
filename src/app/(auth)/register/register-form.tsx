@@ -2,15 +2,15 @@
 
 import { useActionState } from "react";
 import { register } from "@/app/actions/auth";
-import { FormError, SubmitButton } from "@/components/form-bits";
+import { FormError, SubmitButton, keepValuesOnSubmit } from "@/components/form-bits";
 import { FormSelect } from "@/components/native-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function RegisterForm({ departments }: { departments: { id: number; name: string }[] }) {
-  const [state, action] = useActionState(register, undefined);
+  const [state, action, pending] = useActionState(register, undefined);
   return (
-    <form action={action} className="grid gap-4 sm:grid-cols-2">
+    <form onSubmit={keepValuesOnSubmit(action)} className="grid gap-4 sm:grid-cols-2">
       <div className="sm:col-span-2">
         <FormError state={state} />
       </div>
@@ -60,7 +60,7 @@ export function RegisterForm({ departments }: { departments: { id: number; name:
         <Label htmlFor="confirm">Confirm password</Label>
         <Input id="confirm" name="confirm" type="password" autoComplete="new-password" minLength={8} required />
       </div>
-      <SubmitButton pendingText="Creating account…" className="sm:col-span-2">
+      <SubmitButton pending={pending} pendingText="Creating account…" className="sm:col-span-2">
         Create account
       </SubmitButton>
     </form>

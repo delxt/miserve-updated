@@ -4,6 +4,8 @@ A rebuild of the MIServe MIS support request system using **Next.js 16** (App Ro
 
 ## Features
 
+> The original site only shows its title ("MIServe - Request MIS Support") to visitors who are not signed in. The feature list below is a v1 best guess at an MIS support system. It will be matched to the real system once screenshots of the signed-in pages are available.
+
 - **Accounts:** self-registration for students, faculty and staff (ID number, office), sign in and out, profile, and password change. Changing the password signs out your other devices.
 - **Roles:**
   - Requester: files and tracks their own requests.

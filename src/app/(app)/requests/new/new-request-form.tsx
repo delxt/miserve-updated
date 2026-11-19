@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import { createTicket } from "@/app/actions/tickets";
-import { FormError, SubmitButton } from "@/components/form-bits";
+import { FormError, SubmitButton, keepValuesOnSubmit } from "@/components/form-bits";
 import { FormSelect } from "@/components/native-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,12 +22,12 @@ export function NewRequestForm({
   departments: { id: number; name: string }[];
   defaults: { phone: string; departmentId: string };
 }) {
-  const [state, action] = useActionState(createTicket, undefined);
+  const [state, action, pending] = useActionState(createTicket, undefined);
   const [categoryId, setCategoryId] = useState("");
   const hint = categories.find((c) => String(c.id) === categoryId)?.description;
 
   return (
-    <form action={action} className="grid gap-5 md:grid-cols-2">
+    <form onSubmit={keepValuesOnSubmit(action)} className="grid gap-5 md:grid-cols-2">
       <div className="md:col-span-2">
         <FormError state={state} />
       </div>
@@ -99,7 +99,9 @@ export function NewRequestForm({
         <Button variant="outline" asChild>
           <Link href="/requests">Cancel</Link>
         </Button>
-        <SubmitButton pendingText="Submitting…">Submit request</SubmitButton>
+        <SubmitButton pending={pending} pendingText="Submitting…">
+          Submit request
+        </SubmitButton>
       </div>
     </form>
   );
