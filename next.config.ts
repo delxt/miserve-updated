@@ -1,9 +1,13 @@
 import type { NextConfig } from "next";
 
+// MIServe is a logged-in app where almost every page reads the session,
+// so Cache Components is left off and pages render per request.
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  serverExternalPackages: ["bcryptjs"],
+  experimental: {
+    // up to 5 attachments x 10 MB per request, plus form overhead
+    serverActions: { bodySizeLimit: "52mb" },
+  },
   turbopack: {
     rules: {
       "*.css": {
