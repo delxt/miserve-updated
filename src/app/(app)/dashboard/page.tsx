@@ -70,19 +70,18 @@ async function RecentList({
           <Link
             key={t.code}
             href={`/requests/${t.code}`}
-            className="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 hover:text-primary sm:flex-row sm:items-center sm:gap-4"
+            className="group flex flex-col gap-2 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:gap-4"
           >
-            <span className="w-32 shrink-0 text-xs text-muted-foreground">{t.code}</span>
-            <span className="min-w-0 flex-1 truncate font-medium">{t.subject}</span>
-            {showRequester && (
-              <span className="hidden w-40 truncate text-sm text-muted-foreground md:block">{t.requesterName}</span>
-            )}
+            <span className="min-w-0 flex-1">
+              <span className="block truncate font-medium group-hover:text-primary">{t.subject}</span>
+              <span className="block truncate text-xs text-muted-foreground">
+                {t.code}
+                {showRequester ? ` · ${t.requesterName}` : ""} · {fmtDateTime(t.createdAt)}
+              </span>
+            </span>
             <span className="flex shrink-0 items-center gap-2">
               <PriorityBadge priority={t.priority} />
               <StatusBadge status={t.status} />
-            </span>
-            <span className="hidden w-36 shrink-0 text-right text-xs text-muted-foreground lg:block">
-              {fmtDateTime(t.createdAt)}
             </span>
           </Link>
         ))}

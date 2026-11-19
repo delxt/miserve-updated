@@ -45,6 +45,25 @@ export function FormError({ state }: { state: ActionState }) {
   );
 }
 
+/**
+ * Wraps a server action so its result is toasted straight away. Use this when the
+ * form disappears after success (its effects would never run).
+ */
+export function withToast<A extends unknown[]>(
+  fn: (...args: A) => Promise<ActionState>,
+  onOk?: () => void,
+) {
+  return async (...args: A): Promise<ActionState> => {
+    const res = await fn(...args);
+    if (res?.error) toast.error(res.error);
+    else if (res?.ok) {
+      toast.success(res.ok);
+      onOk?.();
+    }
+    return res;
+  };
+}
+
 /** Shows action results as toasts, and optionally resets the form on success. */
 export function useActionToast(state: ActionState, form?: React.RefObject<HTMLFormElement | null>) {
   const last = useRef<ActionState>(undefined);

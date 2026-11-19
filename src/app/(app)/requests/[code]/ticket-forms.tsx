@@ -3,7 +3,7 @@
 import { useActionState, useRef, useState } from "react";
 import { StarIcon } from "lucide-react";
 import { addComment, assignTicket, changeStatus, rateTicket, setPriority } from "@/app/actions/tickets";
-import { SubmitButton, useActionToast } from "@/components/form-bits";
+import { SubmitButton, useActionToast, withToast } from "@/components/form-bits";
 import { FormSelect } from "@/components/native-select";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -77,12 +77,10 @@ export function StatusActions({
   isRequester: boolean;
 }) {
   const [target, setTarget] = useState<Status | null>(null);
-  const [state, action] = useActionState(async (prev: Parameters<typeof changeStatus>[0], form: FormData) => {
-    const res = await changeStatus(prev, form);
-    if (res?.ok) setTarget(null);
-    return res;
-  }, undefined);
-  useActionToast(state);
+  const [, action] = useActionState(
+    withToast(changeStatus, () => setTarget(null)),
+    undefined,
+  );
 
   const label = (s: Status) =>
     (isRequester ? REQUESTER_LABEL[s] : undefined) ??
@@ -155,8 +153,7 @@ export function AssignForm({
   isAdmin: boolean;
   staff: { id: string; fullName: string; role: string }[];
 }) {
-  const [state, action] = useActionState(assignTicket, undefined);
-  useActionToast(state);
+  const [, action] = useActionState(withToast(assignTicket), undefined);
 
   if (!isAdmin) {
     if (current === me) return <p className="text-sm text-muted-foreground">This request is assigned to you.</p>;
@@ -214,8 +211,7 @@ export function PriorityForm({ code, current }: { code: string; current: Priorit
 export function RatingForm({ code }: { code: string }) {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
-  const [state, action] = useActionState(rateTicket, undefined);
-  useActionToast(state);
+  const [, action] = useActionState(withToast(rateTicket), undefined);
   return (
     <form action={action} className="flex flex-col gap-3">
       <input type="hidden" name="code" value={code} />
